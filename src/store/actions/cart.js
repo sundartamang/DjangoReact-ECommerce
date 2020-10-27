@@ -1,0 +1,39 @@
+import axios from "axios";
+import { CART_START, CART_SUCCESS, CART_FAIL } from "./actionTypes";
+import { authAxios } from '../../utils'
+import { orderSummaryURL } from '../../constant'
+console.log("Order summary = ", orderSummaryURL)
+
+export const cartStart = () => {
+    return {
+        type: CART_START
+    };
+};
+
+export const cartSuccess = data => {
+    return {
+        type: CART_SUCCESS,
+        data
+    };
+};
+
+export const cartFail = error => {
+    return {
+        type: CART_FAIL,
+        error: error
+    };
+};
+
+export const fetchCart = () => {
+    return dispatch => {
+        dispatch(cartStart());
+        authAxios
+            .get(orderSummaryURL)
+            .then(res => {
+                dispatch(cartSuccess(res.data));
+            })
+            .catch(err => {
+                dispatch(cartFail(err));
+            });
+    };
+};
